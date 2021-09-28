@@ -1,3 +1,10 @@
+/* -*- c++ -*- */
+/*
+ * Copyright 2021 Franco Venturi.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #pragma once
 
 #include <algorithm>
@@ -23,6 +30,8 @@ class Pipeline {
         void run();
         void stop(double delay=0);
         bool isRunning();
+        Csdr::UntypedSource* getSource();
+        Csdr::UntypedModule* getModule(int stagenum);
     private:
         Csdr::UntypedSource* source;
         bool deleteUnusedModules;

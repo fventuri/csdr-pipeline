@@ -1,3 +1,10 @@
+/* -*- c++ -*- */
+/*
+ * Copyright 2021 Franco Venturi.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include <vector>
 #include <csdr/complex.hpp>
 #include "pipeline.hpp"
@@ -190,6 +197,19 @@ bool Pipeline::isRunning()
             isRunning = s->isRunning();
         });
     return isRunning;
+}
+
+Csdr::UntypedSource* Pipeline::getSource()
+{
+    return source;
+}
+
+Csdr::UntypedModule* Pipeline::getModule(int stageNum)
+{
+    Stage* stage = getStage(stageNum);
+    if (stage == nullptr)
+        throw std::runtime_error("pipeline source is not a module");
+    return stage->module;
 }
 
 Pipeline::Stage::Stage(Csdr::UntypedModule* module,

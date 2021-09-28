@@ -41,18 +41,16 @@ int main()
       | new Converter<float, short>()
       | new PulseAudioWriter<short>(48000, 10240, "fm_receiver");
 
-    auto tuner = dynamic_cast<ShiftAddfast*>(p.getModule(1));
-
     struct timespec delay = { 0, 100000000 };   // 100ms delay
 
     p.run();
 
     sleep(10);
     std::cerr << "changing station" << std::endl;
-    tuner->setRate(-0.25);
+    p.replaceStage(new ShiftAddfast(-0.25), 1);
     sleep(10);
     std::cerr << "changing station back" << std::endl;
-    tuner->setRate(0.25);
+    p.replaceStage(new ShiftAddfast(0.25), 1);
 
     // handle Ctrl-C
     signal(SIGINT, sigint_handler);
