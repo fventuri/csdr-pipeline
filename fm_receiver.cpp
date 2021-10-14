@@ -36,7 +36,7 @@ int main()
       | new FirDecimate(10, 0.015, hamming)
       | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.375, 0.375, 0.0016, hamming))
       | new FmDemod()
-      | new FractionalDecimator(4.166666666666667, 12, prefilter)
+      | new FractionalDecimator<float>(4.166666666666667, 12, prefilter)
       | new WfmDeemphasis(48000, 7.5e-05)
       | new Converter<float, short>()
       | new PulseAudioWriter<short>(48000, 10240, "fm_receiver");
