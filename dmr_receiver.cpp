@@ -11,10 +11,11 @@
 #include <csdr/shift.hpp>
 #include <digiham/dc_block.hpp>
 #include <digiham/digitalvoice_filter.hpp>
-#include <digiham/dstar_decoder.hpp>
-#include <digiham/fsk_demodulator.hpp>
+#include <digiham/dmr_decoder.hpp>
+#include <digiham/gfsk_demodulator.hpp>
 #include <digiham/mbe_synthesizer.hpp>
 #include <digiham/meta.hpp>
+#include <digiham/rrc_filter.hpp>
 #include "pipeline.hpp"
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
@@ -37,12 +38,11 @@ int main()
 
     auto hamming = new HammingWindow();
 
-    auto dstar_decoder = new DStar::Decoder();
-    dstar_decoder->setMetaWriter(new FileMetaWriter(stdout));
+    auto dmr_decoder = new Dmr::Decoder();
+    dmr_decoder->setMetaWriter(new FileMetaWriter(stdout));
 
-    auto dstar_mbe_synthesizer = new Mbe::MbeSynthesizer();
-    short dstar_mode_control_words[] = { 0x3001, 0x6307, 0x0040, 0x0000, 0x0000, 0x4800 };
-    dstar_mbe_synthesizer->setMode(new Mbe::ControlWordMode(dstar_mode_control_words));
+    auto dmr_mbe_synthesizer = new Mbe::MbeSynthesizer();
+    dmr_mbe_synthesizer->setMode(new Mbe::TableMode(33));
 
     auto agc = new Agc<short>();
     agc->setAttack(0.01);
@@ -52,19 +52,20 @@ int main()
     agc->setHangTime(600);
 
     Pipeline p(new FileSource<CF32>(), true);
-    p | new ShiftAddfast(-0.1895)
-      | new FirDecimate(41, 0.0036, hamming, 0.492)
-      | new FractionalDecimator<CF32>(1.01626, 12, nullptr)
-//      | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.0677083, 0.0677083, 0.00666667, hamming))
-      | new FilterModule<CF32>(new FftBandPassFilter(-0.0677083, 0.0677083, 0.00666667, hamming))
+    p | new ShiftAddfast(-0.1)
+      | new FirDecimate(20, 0.0072, hamming, 0.48)
+      | new FractionalDecimator<CF32>(1.04167, 12, nullptr)
+//      | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.0833333, 0.0833333, 0.00666667, hamming))
+      | new FilterModule<CF32>(new FftBandPassFilter(-0.0833333, 0.0833333, 0.00666667, hamming))
       | new FmDemod()
       | new DcBlock::DcBlock()
-      | new Fsk::FskDemodulator(10, false)
-      | dstar_decoder
-      | dstar_mbe_synthesizer
+      | new RrcFilter::WideRrcFilter()
+      | new Fsk::GfskDemodulator(10)
+      | dmr_decoder
+      | dmr_mbe_synthesizer
       | new DigitalVoice::DigitalVoiceFilter()
       | agc
-      | new PulseAudioWriter<short>(8000, 10240, "dstar_receiver");
+      | new PulseAudioWriter<short>(8000, 10240, "dmr_receiver");
 
     struct timespec delay = { 0, 100000000 };   // 100ms delay
 
