@@ -7,8 +7,9 @@
 #include <csdr/firdecimate.hpp>
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
-#include <csdr/source.hpp>
 #include <csdr/shift.hpp>
+#include <csdrx/filesource.hpp>
+#include <csdrx/pulseaudiowriter.hpp>
 #include "pipeline.hpp"
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
@@ -23,6 +24,7 @@ void sigint_handler(int sig)
 
 
 using namespace Csdr;
+using namespace Csdrx;
 
 int main()
 {

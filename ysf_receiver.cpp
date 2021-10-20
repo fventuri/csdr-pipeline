@@ -7,8 +7,9 @@
 #include <csdr/firdecimate.hpp>
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
-#include <csdr/source.hpp>
 #include <csdr/shift.hpp>
+#include <csdrx/filesource.hpp>
+#include <csdrx/pulseaudiowriter.hpp>
 #include <digiham/dc_block.hpp>
 #include <digiham/digitalvoice_filter.hpp>
 #include <digiham/gfsk_demodulator.hpp>
@@ -30,6 +31,7 @@ void sigint_handler(int sig)
 
 
 using namespace Csdr;
+using namespace Csdrx;
 using namespace Digiham;
 
 int main()

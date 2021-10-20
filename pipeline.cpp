@@ -162,7 +162,7 @@ void Pipeline::stop(double delay)
         [](auto s){
             s->stop();
         }) ||
-    untypedToTyped1<Csdr::FileSource, Csdr::UntypedSource>(source,
+    untypedToTyped1<Csdrx::FileSource, Csdr::UntypedSource>(source,
         [](auto s){
             s->stop();
         });
@@ -192,7 +192,7 @@ void Pipeline::stop(double delay)
 bool Pipeline::isRunning()
 {
     bool isRunning = true;
-    untypedToTyped1<Csdr::FileSource, Csdr::UntypedSource>(source,
+    untypedToTyped1<Csdrx::FileSource, Csdr::UntypedSource>(source,
         [&isRunning](auto s){
             isRunning = s->isRunning();
         });

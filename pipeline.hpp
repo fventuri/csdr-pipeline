@@ -14,6 +14,7 @@
 #include <csdr/ringbuffer.hpp>
 #include <csdr/source.hpp>
 #include <csdr/writer.hpp>
+#include <csdrx/filesource.hpp>
 
 class Pipeline {
 

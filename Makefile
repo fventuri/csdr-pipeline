@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-O -Wall
-LDLIBS=-lcsdr++
+LDLIBS=-lcsdr++ -lcsdrx
 
 
 all: fm_receiver dstar_receiver dmr_receiver ysf_receiver
